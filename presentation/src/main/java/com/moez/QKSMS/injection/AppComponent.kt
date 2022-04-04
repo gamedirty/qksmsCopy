@@ -44,22 +44,25 @@ import com.moez.QKSMS.injection.android.ActivityBuilderModule
 import com.moez.QKSMS.injection.android.BroadcastReceiverBuilderModule
 import com.moez.QKSMS.injection.android.ServiceBuilderModule
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [
-    AndroidSupportInjectionModule::class,
-    AppModule::class,
-    ActivityBuilderModule::class,
-    BroadcastReceiverBuilderModule::class,
-    ServiceBuilderModule::class])
-interface AppComponent {
+@Component(
+    modules = [
+        AndroidSupportInjectionModule::class,
+        AppModule::class,
+        ActivityBuilderModule::class,
+        BroadcastReceiverBuilderModule::class,
+        ServiceBuilderModule::class]
+)
+interface AppComponent : AndroidInjector<QKApplication> {
 
     fun conversationInfoBuilder(): ConversationInfoComponent.Builder
     fun themePickerBuilder(): ThemePickerComponent.Builder
 
-    fun inject(application: QKApplication)
+    override fun inject(application: QKApplication)
 
     fun inject(controller: AboutController)
     fun inject(controller: BackupController)

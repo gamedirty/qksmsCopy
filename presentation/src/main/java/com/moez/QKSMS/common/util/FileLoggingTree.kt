@@ -38,11 +38,12 @@ class FileLoggingTree @Inject constructor(private val prefs: Preferences) : Timb
 
     private val fileLock: Boolean = false
 
-    override fun log(priority: Int, tag: String, message: String, t: Throwable?) {
+    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         if (!prefs.logging.get()) return
 
         Schedulers.io().scheduleDirect {
-            val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault()).format(System.currentTimeMillis())
+            val timestamp =
+                SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault()).format(System.currentTimeMillis())
             val priorityString = when (priority) {
                 Log.VERBOSE -> "V"
                 Log.DEBUG -> "D"
@@ -62,7 +63,10 @@ class FileLoggingTree @Inject constructor(private val prefs: Preferences) : Timb
                     val dir = File(Environment.getExternalStorageDirectory(), "QKSMS/Logs").apply { mkdirs() }
 
                     // Create the file
-                    val file = File(dir, "${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())}.log")
+                    val file = File(
+                        dir,
+                        "${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())}.log"
+                    )
 
                     // Write the log to the file
                     FileOutputStream(file, true).use { fileOutputStream -> fileOutputStream.write(log) }

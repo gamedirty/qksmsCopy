@@ -38,7 +38,8 @@ import com.moez.QKSMS.repository.MessageRepository
 import com.moez.QKSMS.util.PhoneNumberUtils
 import com.moez.QKSMS.util.Preferences
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
+import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -56,11 +57,16 @@ import javax.inject.Inject
  */
 abstract class QkThemedActivity : QkActivity() {
 
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var conversationRepo: ConversationRepository
-    @Inject lateinit var messageRepo: MessageRepository
-    @Inject lateinit var phoneNumberUtils: PhoneNumberUtils
-    @Inject lateinit var prefs: Preferences
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var conversationRepo: ConversationRepository
+    @Inject
+    lateinit var messageRepo: MessageRepository
+    @Inject
+    lateinit var phoneNumberUtils: PhoneNumberUtils
+    @Inject
+    lateinit var prefs: Preferences
 
     /**
      * In case the activity should be themed for a specific conversation, the selected conversation
@@ -73,29 +79,29 @@ abstract class QkThemedActivity : QkActivity() {
      * Set it based on the latest message in the conversation
      */
     val theme: Observable<Colors.Theme> = threadId
-            .distinctUntilChanged()
-            .switchMap { threadId ->
-                val conversation = conversationRepo.getConversation(threadId)
-                when {
-                    conversation == null -> Observable.just(Optional(null))
+        .distinctUntilChanged()
+        .switchMap { threadId ->
+            val conversation = conversationRepo.getConversation(threadId)
+            when {
+                conversation == null -> Observable.just(Optional(null))
 
-                    conversation.recipients.size == 1 -> Observable.just(Optional(conversation.recipients.first()))
+                conversation.recipients.size == 1 -> Observable.just(Optional(conversation.recipients.first()))
 
-                    else -> messageRepo.getLastIncomingMessage(conversation.id)
-                            .asObservable()
-                            .mapNotNull { messages -> messages.firstOrNull() }
-                            .distinctUntilChanged { message -> message.address }
-                            .mapNotNull { message ->
-                                conversation.recipients.find { recipient ->
-                                    phoneNumberUtils.compare(recipient.address, message.address)
-                                }
-                            }
-                            .map { recipient -> Optional(recipient) }
-                            .startWith(Optional(conversation.recipients.firstOrNull()))
-                            .distinctUntilChanged()
-                }
+                else -> messageRepo.getLastIncomingMessage(conversation.id)
+                    .asObservable()
+                    .mapNotNull { messages -> messages.firstOrNull() }
+                    .distinctUntilChanged { message -> message.address }
+                    .mapNotNull { message ->
+                        conversation.recipients.find { recipient ->
+                            phoneNumberUtils.compare(recipient.address, message.address)
+                        }
+                    }
+                    .map { recipient -> Optional(recipient) }
+                    .startWith(Optional(conversation.recipients.firstOrNull()))
+                    .distinctUntilChanged()
             }
-            .switchMap { colors.themeObservable(it.value) }
+        }
+        .switchMap { colors.themeObservable(it.value) }
 
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,10 +111,10 @@ abstract class QkThemedActivity : QkActivity() {
         // When certain preferences change, we need to recreate the activity
         val triggers = listOf(prefs.nightMode, prefs.night, prefs.black, prefs.textSize, prefs.systemFont)
         Observable.merge(triggers.map { it.asObservable().skip(1) })
-                .debounce(400, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .autoDisposable(scope())
-                .subscribe { recreate() }
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDispose(scope())
+            .subscribe { recreate() }
 
         // We can only set light nav bar on API 27 in attrs, but we can do it in API 26 here
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
@@ -146,7 +152,7 @@ abstract class QkThemedActivity : QkActivity() {
 
                 menuItem.icon = menuItem.icon?.apply { setTint(tint) }
             }
-        }.autoDisposable(scope(Lifecycle.Event.ON_DESTROY)).subscribe()
+        }.autoDispose(scope(Lifecycle.Event.ON_DESTROY)).subscribe()
     }
 
     open fun getColoredMenuItems(): List<Int> {

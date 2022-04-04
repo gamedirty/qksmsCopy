@@ -60,7 +60,7 @@ import com.moez.QKSMS.feature.contacts.ContactsActivity
 import com.moez.QKSMS.model.Attachment
 import com.moez.QKSMS.model.Recipient
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -151,7 +151,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
                 .doOnNext { attach.setBackgroundTint(it.theme) }
                 .doOnNext { attach.setTint(it.textPrimary) }
                 .doOnNext { messageAdapter.theme = it }
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe()
 
         window.callback = ComposeWindowCallback(window.callback, this)
@@ -363,6 +363,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
         return super.getColoredMenuItems() + R.id.call
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
             requestCode == SelectContactRequestCode -> {
