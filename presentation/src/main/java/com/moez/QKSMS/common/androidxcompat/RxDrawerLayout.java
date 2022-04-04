@@ -52,13 +52,11 @@ public final class RxDrawerLayout {
   @CheckResult @NonNull public static Consumer<? super Boolean> open(
       @NonNull final DrawerLayout view, final int gravity) {
     checkNotNull(view, "view == null");
-    return new Consumer<Boolean>() {
-      @Override public void accept(Boolean aBoolean) {
-        if (aBoolean) {
-          view.openDrawer(gravity);
-        } else {
-          view.closeDrawer(gravity);
-        }
+    return (Consumer<Boolean>) aBoolean -> {
+      if (aBoolean) {
+        view.openDrawer(gravity);
+      } else {
+        view.closeDrawer(gravity);
       }
     };
   }

@@ -22,13 +22,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.editorActions
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.moez.QKSMS.R
-import com.moez.QKSMS.common.ViewModelFactory
 import com.moez.QKSMS.common.base.QkThemedActivity
 import com.moez.QKSMS.common.util.extensions.hideKeyboard
 import com.moez.QKSMS.common.util.extensions.resolveThemeColor
@@ -54,9 +53,11 @@ class ContactsActivity : QkThemedActivity(), ContactsContract {
         const val ChipsKey = "chips"
     }
 
-    @Inject lateinit var contactsAdapter: ComposeItemAdapter
-    @Inject lateinit var phoneNumberAdapter: PhoneNumberPickerAdapter
-    @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var contactsAdapter: ComposeItemAdapter
+
+    @Inject
+    lateinit var phoneNumberAdapter: PhoneNumberPickerAdapter
 
     override val queryChangedIntent: Observable<CharSequence> by lazy { search.textChanges() }
     override val queryClearedIntent: Observable<*> by lazy { cancel.clicks() }
@@ -66,7 +67,7 @@ class ContactsActivity : QkThemedActivity(), ContactsContract {
     override val phoneNumberSelectedIntent: Subject<Optional<Long>> by lazy { phoneNumberAdapter.selectedItemChanges }
     override val phoneNumberActionIntent: Subject<PhoneNumberAction> = PublishSubject.create()
 
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[ContactsViewModel::class.java] }
+    private val viewModel by viewModels<ContactsViewModel>()
 
     private val phoneNumberDialog by lazy {
         QkDialog(this).apply {

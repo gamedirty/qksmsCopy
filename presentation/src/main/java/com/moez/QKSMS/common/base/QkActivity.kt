@@ -62,11 +62,9 @@ abstract class QkActivity : AppCompatActivity() {
         toolbarTitle?.text = title
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val result = super.onCreateOptionsMenu(menu)
-        if (menu != null) {
-            this.menu.onNext(menu)
-        }
+        this.menu.onNext(menu)
         return result
     }
 

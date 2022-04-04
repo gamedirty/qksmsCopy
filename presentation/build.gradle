@@ -94,6 +94,7 @@ dependencies {
     // lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"
+    implementation "androidx.activity:activity-ktx:1.4.0"
 
     // androidx
     implementation "androidx.appcompat:appcompat:1.4.1"

@@ -20,6 +20,7 @@ package com.moez.QKSMS.feature.scheduled
 
 import android.graphics.Typeface
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -41,14 +42,13 @@ class ScheduledActivity : QkThemedActivity(), ScheduledView {
     @Inject lateinit var dialog: QkDialog
     @Inject lateinit var fontProvider: FontProvider
     @Inject lateinit var messageAdapter: ScheduledMessageAdapter
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val messageClickIntent by lazy { messageAdapter.clicks }
     override val messageMenuIntent by lazy { dialog.adapter.menuItemClicks }
     override val composeIntent by lazy { compose.clicks() }
     override val upgradeIntent by lazy { upgrade.clicks() }
 
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[ScheduledViewModel::class.java] }
+    private val viewModel by viewModels<ScheduledViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

@@ -20,6 +20,7 @@ package com.moez.QKSMS.feature.plus
 
 import android.graphics.Typeface
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -50,9 +51,8 @@ class PlusActivity : QkThemedActivity(), PlusView {
 
     @Inject lateinit var fontProvider: FontProvider
     @Inject lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[PlusViewModel::class.java] }
+    private val viewModel by viewModels<PlusViewModel>()
 
     override val upgradeIntent by lazy { upgrade.clicks() }
     override val upgradeDonateIntent by lazy { upgradeDonate.clicks() }

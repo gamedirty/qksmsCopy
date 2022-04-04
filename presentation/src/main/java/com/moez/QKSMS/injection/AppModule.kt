@@ -27,7 +27,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.moez.QKSMS.blocking.BlockingClient
 import com.moez.QKSMS.blocking.BlockingManager
-import com.moez.QKSMS.common.ViewModelFactory
 import com.moez.QKSMS.common.util.BillingManagerImpl
 import com.moez.QKSMS.common.util.NotificationManagerImpl
 import com.moez.QKSMS.common.util.ShortcutManagerImpl
@@ -121,9 +120,6 @@ class AppModule(private var application: Application) {
                 .add(KotlinJsonAdapterFactory())
                 .build()
     }
-
-    @Provides
-    fun provideViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory = factory
 
     // Listener
 

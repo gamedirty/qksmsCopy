@@ -24,6 +24,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -46,18 +47,17 @@ import javax.inject.Inject
 
 class NotificationPrefsActivity : QkThemedActivity(), NotificationPrefsView {
 
-    @Inject lateinit var previewModeDialog: QkDialog
-    @Inject lateinit var actionsDialog: QkDialog
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var previewModeDialog: QkDialog
+    @Inject
+    lateinit var actionsDialog: QkDialog
 
     override val preferenceClickIntent: Subject<PreferenceView> = PublishSubject.create()
     override val previewModeSelectedIntent by lazy { previewModeDialog.adapter.menuItemClicks }
     override val ringtoneSelectedIntent: Subject<String> = PublishSubject.create()
     override val actionsSelectedIntent by lazy { actionsDialog.adapter.menuItemClicks }
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[NotificationPrefsViewModel::class.java]
-    }
+    private val viewModel by viewModels<NotificationPrefsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -82,12 +82,12 @@ class NotificationPrefsActivity : QkThemedActivity(), NotificationPrefsView {
 
         // Listen to clicks for all of the preferences
         (0 until preferences.childCount)
-                .map { index -> preferences.getChildAt(index) }
-                .mapNotNull { view -> view as? PreferenceView }
-                .map { preference -> preference.clicks().map { preference } }
-                .let { Observable.merge(it) }
-                .autoDispose(scope())
-                .subscribe(preferenceClickIntent)
+            .map { index -> preferences.getChildAt(index) }
+            .mapNotNull { view -> view as? PreferenceView }
+            .map { preference -> preference.clicks().map { preference } }
+            .let { Observable.merge(it) }
+            .autoDispose(scope())
+            .subscribe(preferenceClickIntent)
     }
 
     override fun render(state: NotificationPrefsState) {
